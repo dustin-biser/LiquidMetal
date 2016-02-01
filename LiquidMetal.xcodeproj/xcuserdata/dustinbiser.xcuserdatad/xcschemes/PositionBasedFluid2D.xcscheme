@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0C4CD3781C5F04960084F229"
-               BuildableName = "LiquidMetal.app"
-               BlueprintName = "LiquidMetal"
+               BlueprintIdentifier = "0C4CD3AE1C5F061D0084F229"
+               BuildableName = "PositionBasedFluid2D.app"
+               BlueprintName = "PositionBasedFluid2D"
                ReferencedContainer = "container:LiquidMetal.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,23 +28,13 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0C4CD3891C5F04970084F229"
-               BuildableName = "LiquidMetalTests.xctest"
-               BlueprintName = "LiquidMetalTests"
-               ReferencedContainer = "container:LiquidMetal.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0C4CD3781C5F04960084F229"
-            BuildableName = "LiquidMetal.app"
-            BlueprintName = "LiquidMetal"
+            BlueprintIdentifier = "0C4CD3AE1C5F061D0084F229"
+            BuildableName = "PositionBasedFluid2D.app"
+            BlueprintName = "PositionBasedFluid2D"
             ReferencedContainer = "container:LiquidMetal.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,9 +55,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0C4CD3781C5F04960084F229"
-            BuildableName = "LiquidMetal.app"
-            BlueprintName = "LiquidMetal"
+            BlueprintIdentifier = "0C4CD3AE1C5F061D0084F229"
+            BuildableName = "PositionBasedFluid2D.app"
+            BlueprintName = "PositionBasedFluid2D"
             ReferencedContainer = "container:LiquidMetal.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -84,9 +74,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0C4CD3781C5F04960084F229"
-            BuildableName = "LiquidMetal.app"
-            BlueprintName = "LiquidMetal"
+            BlueprintIdentifier = "0C4CD3AE1C5F061D0084F229"
+            BuildableName = "PositionBasedFluid2D.app"
+            BlueprintName = "PositionBasedFluid2D"
             ReferencedContainer = "container:LiquidMetal.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

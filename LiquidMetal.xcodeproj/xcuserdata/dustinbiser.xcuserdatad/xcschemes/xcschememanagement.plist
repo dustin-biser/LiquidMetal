@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>PositionBasedFluid2D.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -18,6 +23,11 @@
 			<true/>
 		</dict>
 		<key>0C4CD3891C5F04970084F229</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>0C4CD3AE1C5F061D0084F229</key>
 		<dict>
 			<key>primary</key>
 			<true/>
