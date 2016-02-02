@@ -8,57 +8,8 @@
 import MetalKit
 
 
-private let kWidth  : Float32 = 0.5;
-private let kHeight : Float32 = 0.5;
-private let kDepth  : Float32 = 0.5;
-
-private let CubeVertexData : [Float32] = [
-//           Postions                  Normals
-     kWidth, -kHeight,  kDepth,     0.0, -1.0,  0.0,
-    -kWidth, -kHeight,  kDepth,     0.0, -1.0,  0.0,
-    -kWidth, -kHeight, -kDepth,     0.0, -1.0,  0.0,
-     kWidth, -kHeight, -kDepth,     0.0, -1.0,  0.0,
-     kWidth, -kHeight,  kDepth,     0.0, -1.0,  0.0,
-    -kWidth, -kHeight, -kDepth,     0.0, -1.0,  0.0,
-    
-     kWidth,  kHeight,  kDepth,     1.0,  0.0,  0.0,
-     kWidth, -kHeight,  kDepth,     1.0,  0.0,  0.0,
-     kWidth, -kHeight, -kDepth,     1.0,  0.0,  0.0,
-     kWidth,  kHeight, -kDepth,     1.0,  0.0,  0.0,
-     kWidth,  kHeight,  kDepth,     1.0,  0.0,  0.0,
-     kWidth, -kHeight, -kDepth,     1.0,  0.0,  0.0,
-    
-    -kWidth,  kHeight,  kDepth,     0.0,  1.0,  0.0,
-     kWidth,  kHeight,  kDepth,     0.0,  1.0,  0.0,
-     kWidth,  kHeight, -kDepth,     0.0,  1.0,  0.0,
-    -kWidth,  kHeight, -kDepth,     0.0,  1.0,  0.0,
-    -kWidth,  kHeight,  kDepth,     0.0,  1.0,  0.0,
-     kWidth,  kHeight, -kDepth,     0.0,  1.0,  0.0,
-    
-    -kWidth, -kHeight,  kDepth,    -1.0,  0.0,  0.0,
-    -kWidth,  kHeight,  kDepth,    -1.0,  0.0,  0.0,
-    -kWidth,  kHeight, -kDepth,    -1.0,  0.0,  0.0,
-    -kWidth, -kHeight, -kDepth,    -1.0,  0.0,  0.0,
-    -kWidth, -kHeight,  kDepth,    -1.0,  0.0,  0.0,
-    -kWidth,  kHeight, -kDepth,    -1.0,  0.0,  0.0,
-    
-     kWidth,  kHeight,  kDepth,     0.0,  0.0,  1.0,
-    -kWidth,  kHeight,  kDepth,     0.0,  0.0,  1.0,
-    -kWidth, -kHeight,  kDepth,     0.0,  0.0,  1.0,
-    -kWidth, -kHeight,  kDepth,     0.0,  0.0,  1.0,
-     kWidth, -kHeight,  kDepth,     0.0,  0.0,  1.0,
-     kWidth,  kHeight,  kDepth,     0.0,  0.0,  1.0,
-    
-     kWidth, -kHeight, -kDepth,     0.0,  0.0, -1.0,
-    -kWidth, -kHeight, -kDepth,     0.0,  0.0, -1.0,
-    -kWidth,  kHeight, -kDepth,     0.0,  0.0, -1.0,
-     kWidth,  kHeight, -kDepth,     0.0,  0.0, -1.0,
-     kWidth, -kHeight, -kDepth,     0.0,  0.0, -1.0,
-    -kWidth,  kHeight, -kDepth,     0.0,  0.0, -1.0
-]
-
+// Use for tripple buffering generated frames.
 private let numInflightCommandBuffers = 3
-
 
 
 class MetalRenderer {
@@ -72,18 +23,14 @@ class MetalRenderer {
     var pipelineState : MTLRenderPipelineState!    = nil
     var depthStencilState : MTLDepthStencilState!  = nil
     
-    
-    var inflightSemaphore = dispatch_semaphore_create(numInflightCommandBuffers)
-    
-    var vertexBuffer : MTLBuffer!                  = nil
-    var instanceBuffer : MTLBuffer!               = nil
+    var particleMesh : MTKMesh!                    = nil
+    var instanceBuffer : MTLBuffer!                = nil
     var frameUniformBuffers = [MTLBuffer!](count: numInflightCommandBuffers, repeatedValue: nil)
     var currentFrame : Int = 0
     
-    var rotationAngle : Float = 0.0
-    let rotationDelta : Float = 0.01
+    var numParticles: Int = 4
     
-    var numCubeInstances : Int = 4
+    var inflightSemaphore = dispatch_semaphore_create(numInflightCommandBuffers)
     
     
     //-----------------------------------------------------------------------------------
@@ -93,14 +40,16 @@ class MetalRenderer {
         self.setupMetal()
         self.setupView()
         
-        self.prepareDepthStencilState()
-        self.preparePipelineState()
-        
         self.allocateUniformBuffers()
         self.setFrameUniforms()
         
-        self.uploadInstanceData()
-        self.uploadVertexBufferData()
+//        self.uploadInstanceData()
+        
+        let vertexDescriptor = self.initVertexDescriptor()
+        self.uploadMeshVertexData(vertexDescriptor)
+        
+        self.preparePipelineState(vertexDescriptor)
+        self.prepareDepthStencilState()
     }
     
     //-----------------------------------------------------------------------------------
@@ -108,9 +57,7 @@ class MetalRenderer {
         device = MTLCreateSystemDefaultDevice()
         if device == nil {
             fatalError("Error creating default MTLDevice.")
-        } else {
-            print("Metal Device: \(device)")
-        }
+        } 
         
         commandQueue = device.newCommandQueue()
         
@@ -139,9 +86,7 @@ class MetalRenderer {
     
     //-----------------------------------------------------------------------------------
     private func setFrameUniforms() {
-        rotationAngle += rotationDelta
-        var modelMatrix = matrix_from_rotation(rotationAngle, 1, 1, 0)
-        modelMatrix = matrix_multiply(matrix_from_translation(0.0, 0.0, 2.0), modelMatrix)
+        let modelMatrix = matrix_identity_float4x4
         
         // Projection Matrix:
         let width = Float(self.mtkView.bounds.size.width)
@@ -151,7 +96,7 @@ class MetalRenderer {
         let projectionMatrix = matrix_from_perspective_fov_aspectLH(fovy, aspect,
             Float(0.1), Float(100))
         
-        let viewMatrix = matrix_from_translation(0.0, 0.0, 2.0)
+        let viewMatrix = matrix_from_translation(0.0, 0.0, 30.0)
         var modelView = matrix_multiply(viewMatrix, modelMatrix)
         let normalMatrix = sub_matrix_float3x3(&modelView)
         
@@ -168,14 +113,59 @@ class MetalRenderer {
     }
     
     //-----------------------------------------------------------------------------------
-    private func uploadVertexBufferData() {
-        let numBytes = CubeVertexData.count * sizeof(Float32)
-        vertexBuffer = device.newBufferWithBytes (
-            CubeVertexData,
-            length: numBytes,
-            options: .OptionCPUCacheModeWriteCombined
+    private func initVertexDescriptor() -> MTLVertexDescriptor {
+        // Create a vertex descriptor
+        let vertexDescriptor = MTLVertexDescriptor()
+        
+        //-- Vertex Positions, attribute description:
+        vertexDescriptor.attributes[PositionAttribute].format = MTLVertexFormat.Float3
+        vertexDescriptor.attributes[PositionAttribute].offset = 0
+        vertexDescriptor.attributes[PositionAttribute].bufferIndex = VertexBufferIndex
+        
+        //-- Vertex Normals, attribute description:
+        vertexDescriptor.attributes[NormalAttribute].format = MTLVertexFormat.Float3
+        vertexDescriptor.attributes[NormalAttribute].offset = sizeof(Float32) * 3
+        vertexDescriptor.attributes[NormalAttribute].bufferIndex = VertexBufferIndex
+        
+        //-- VertexBuffer layout description:
+        vertexDescriptor.layouts[VertexBufferIndex].stride = sizeof(Float32) * 6
+        vertexDescriptor.layouts[VertexBufferIndex].stepRate = 1
+        vertexDescriptor.layouts[VertexBufferIndex].stepFunction = .PerVertex
+        
+        return vertexDescriptor
+    }
+    
+    //-----------------------------------------------------------------------------------
+    private func uploadMeshVertexData(vertexDescriptor: MTLVertexDescriptor) {
+        guard let assetURL = NSBundle.mainBundle().URLForResource("sphere.obj", withExtension: nil) else {
+            fatalError("Unable to locate asset: sphere.obj")
+        }
+        
+        let modelIOVertexDescriptor = MTKModelIOVertexDescriptorFromMetal(vertexDescriptor)
+        
+        // Mark position attribute data with Position Model IO name type.
+        let positionVertexAttribute =
+            modelIOVertexDescriptor.attributes[PositionAttribute] as! MDLVertexAttribute
+        positionVertexAttribute.name = MDLVertexAttributePosition
+        
+        // Mark normal attribute data with Normal Model IO name type.
+        let normalVertexAttribute =
+            modelIOVertexDescriptor.attributes[NormalAttribute] as! MDLVertexAttribute
+        normalVertexAttribute.name = MDLVertexAttributeNormal
+        
+        
+        let bufferAllocator = MTKMeshBufferAllocator(device: device)
+        
+        let asset = MDLAsset(
+                URL: assetURL,
+                vertexDescriptor: modelIOVertexDescriptor,
+                bufferAllocator: bufferAllocator
         )
-        vertexBuffer.label = "CubeVertexData"
+        
+        
+        var mtkMeshes = try! MTKMesh.newMeshesFromAsset(asset, device: device, sourceMeshes: nil)
+        
+        particleMesh = mtkMeshes[0]
     }
     
     //-----------------------------------------------------------------------------------
@@ -197,7 +187,7 @@ class MetalRenderer {
         
         instanceBuffer = device.newBufferWithBytes(
             instanceData,
-            length: strideof(InstanceUniforms) * numCubeInstances,
+            length: strideof(InstanceUniforms) * numParticles,
             options: .CPUCacheModeWriteCombined
         )
         
@@ -209,7 +199,7 @@ class MetalRenderer {
     }
     
     //-----------------------------------------------------------------------------------
-    private func preparePipelineState() {
+    private func preparePipelineState(vertexDescriptor: MTLVertexDescriptor) {
         
         guard let vertexFunction = defaultShaderLibrary.newFunctionWithName("vertexFunction")
             else {
@@ -220,29 +210,11 @@ class MetalRenderer {
             else {
                 fatalError("Error retrieving fragment function.")
         }
-    
-        // Create a vertex descriptor
-        let vertexDescriptor = MTLVertexDescriptor()
-        
-        //-- Vertex Positions, attribute description:
-        vertexDescriptor.attributes[PositionAttribute].format = MTLVertexFormat.Float3
-        vertexDescriptor.attributes[PositionAttribute].offset = 0
-        vertexDescriptor.attributes[PositionAttribute].bufferIndex = VertexBufferIndex
-        
-        //-- Vertex Normals, attribute description:
-        vertexDescriptor.attributes[NormalAttribute].format = MTLVertexFormat.Float3
-        vertexDescriptor.attributes[NormalAttribute].offset = sizeof(Float32) * 3
-        vertexDescriptor.attributes[NormalAttribute].bufferIndex = VertexBufferIndex
-        
-        //-- VertexBuffer layout description:
-        vertexDescriptor.layouts[VertexBufferIndex].stride = sizeof(Float32) * 6
-        vertexDescriptor.layouts[VertexBufferIndex].stepRate = 1
-        vertexDescriptor.layouts[VertexBufferIndex].stepFunction = .PerVertex
         
         
         //-- Render Pipeline Descriptor:
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
-        pipelineDescriptor.label = "Forward Render Pipeline"
+        pipelineDescriptor.label = "Render Pipeline"
         pipelineDescriptor.vertexFunction = vertexFunction
         pipelineDescriptor.fragmentFunction = fragmentFunction
         pipelineDescriptor.vertexDescriptor = vertexDescriptor
@@ -268,14 +240,18 @@ class MetalRenderer {
         // Get the current MTLRenderPassDescriptor and set it's color and depth
         // clear values:
         let renderPassDescriptor = mtkView.currentRenderPassDescriptor!
-        renderPassDescriptor.colorAttachments[0].clearColor =
-                MTLClearColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0)
+        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(
+                red:   0.3,
+                green: 0.3,
+                blue:  0.3,
+                alpha: 1.0
+        )
         renderPassDescriptor.depthAttachment.clearDepth = 1.0
         
         let renderEncoder =
             commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
         
-        renderEncoder.pushDebugGroup("Cube")
+        renderEncoder.pushDebugGroup("Particle Mesh")
         renderEncoder.setViewport(
             MTLViewport(
                 originX: 0,
@@ -291,11 +267,14 @@ class MetalRenderer {
         
         renderEncoder.setRenderPipelineState(pipelineState)
         
-        renderEncoder.setVertexBuffer(
-                vertexBuffer,
-                offset: 0,
+        
+        for vertexBuffer in particleMesh.vertexBuffers {
+            renderEncoder.setVertexBuffer(
+                vertexBuffer.buffer,
+                offset: vertexBuffer.offset,
                 atIndex: VertexBufferIndex
-        )
+            )
+        }
         
         renderEncoder.setVertexBuffer(
                 frameUniformBuffers[currentFrame],
@@ -303,14 +282,15 @@ class MetalRenderer {
                 atIndex: FrameUniformBufferIndex
         )
         
-        renderEncoder.setVertexBuffer(
-                instanceBuffer,
-                offset: 0,
-                atIndex: InstanceUniformBufferIndex
-        )
         
-        renderEncoder.drawPrimitives( .Triangle,
-            vertexStart: 0, vertexCount: 36, instanceCount: numCubeInstances)
+        for subMesh in particleMesh.submeshes {
+            renderEncoder.drawIndexedPrimitives(.Triangle,
+                indexCount: subMesh.indexCount,
+                indexType: subMesh.indexType,
+                indexBuffer: subMesh.indexBuffer.buffer,
+                indexBufferOffset: subMesh.indexBuffer.offset
+            )
+        }
         
         renderEncoder.endEncoding()
         renderEncoder.popDebugGroup()

@@ -36,14 +36,14 @@ struct VertexOutput {
 // Vertex Function
 vertex VertexOutput vertexFunction (
         VertexInput v_in [[ stage_in ]],
-        constant InstanceUniforms * instanceUniforms [[ buffer(InstanceUniformBufferIndex) ]],
-        constant FrameUniforms & frameUniforms [[ buffer(FrameUniformBufferIndex) ]],
-        ushort iid [[ instance_id ]]
+//        constant InstanceUniforms * instanceUniforms [[ buffer(InstanceUniformBufferIndex) ]],
+        constant FrameUniforms & frameUniforms [[ buffer(FrameUniformBufferIndex) ]]
+//        ushort iid [[ instance_id ]]
 ) {
     VertexOutput vOut;
     
     float4 pWorld = frameUniforms.modelMatrix * float4(v_in.position, 1.0);
-    pWorld = instanceUniforms[iid].modelMatrix * pWorld;
+//    pWorld = instanceUniforms[iid].modelMatrix * pWorld;
     float4 pEye = frameUniforms.viewMatrix * pWorld;
     
     vOut.eye_position = pEye.xyz;
