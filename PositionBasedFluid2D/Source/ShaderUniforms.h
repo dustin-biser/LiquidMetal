@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <simd/vector_types.h>
 #include <simd/matrix_types.h>
 
 /// Per frame uniforms.
@@ -19,5 +20,5 @@ struct FrameUniforms {
 };
 
 struct InstanceUniforms {
-    matrix_float4x4 modelMatrix;
+    vector_float4 worldOffset;
 };

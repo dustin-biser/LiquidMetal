@@ -84,6 +84,20 @@ matrix_float4x4 matrix_from_rotation (
 }
 
 //---------------------------------------------------------------------------------------
+matrix_float4x4 matrix_from_scale (
+        float x,
+        float y,
+        float z
+) {
+    matrix_float4x4 m = matrix_identity_float4x4;
+    m.columns[0][0] = x;
+    m.columns[1][1] = y;
+    m.columns[2][2] = z;
+    
+    return m;
+}
+
+//---------------------------------------------------------------------------------------
 matrix_float3x3 sub_matrix_float3x3 (
         const matrix_float4x4 * m
 ) {

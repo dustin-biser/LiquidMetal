@@ -36,14 +36,14 @@ struct VertexOutput {
 // Vertex Function
 vertex VertexOutput vertexFunction (
         VertexInput v_in [[ stage_in ]],
-//        constant InstanceUniforms * instanceUniforms [[ buffer(InstanceUniformBufferIndex) ]],
-        constant FrameUniforms & frameUniforms [[ buffer(FrameUniformBufferIndex) ]]
-//        ushort iid [[ instance_id ]]
+        constant InstanceUniforms * instanceUniforms [[ buffer(InstanceUniformBufferIndex) ]],
+        constant FrameUniforms & frameUniforms [[ buffer(FrameUniformBufferIndex) ]],
+        uint iid [[ instance_id ]]
 ) {
     VertexOutput vOut;
     
     float4 pWorld = frameUniforms.modelMatrix * float4(v_in.position, 1.0);
-//    pWorld = instanceUniforms[iid].modelMatrix * pWorld;
+    pWorld += instanceUniforms[iid].worldOffset;
     float4 pEye = frameUniforms.viewMatrix * pWorld;
     
     vOut.eye_position = pEye.xyz;
@@ -63,8 +63,8 @@ fragment half4 fragmentFunction (
     float n_dot_l = dot(f_in.eye_normal.rgb, l);
     n_dot_l = fmax(0.0, n_dot_l);
     
-    float r = clamp(distance(light_position, f_in.eye_position), 0.4, 1.2);
-    float fallOff = 1.0/r;
+//    float r = clamp(distance(light_position, f_in.eye_position), 0.4, 1.2);
+//    float fallOff = 1.0/r;
     
-    return half4(diffuse * n_dot_l, 1.0) * fallOff;
+    return half4(diffuse * n_dot_l, 1.0);
 }

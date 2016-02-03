@@ -471,6 +471,7 @@
 				INFOPLIST_FILE = PositionBasedFluid2D/Source/OSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MTL_HEADER_SEARCH_PATHS = PositionBasedFluid2D/Source;
+				MTL_OPTIMIZATION_LEVEL = 0;
 				MTL_PREPROCESSOR_DEFINITIONS = "METAL=1";
 				PRODUCT_BUNDLE_IDENTIFIER = none.PositionBasedFluid2D;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -486,10 +487,13 @@
 				INFOPLIST_FILE = PositionBasedFluid2D/Source/OSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MTL_HEADER_SEARCH_PATHS = PositionBasedFluid2D/Source;
+				MTL_OPTIMIZATION_LEVEL = 3;
 				MTL_PREPROCESSOR_DEFINITIONS = "METAL=1";
 				PRODUCT_BUNDLE_IDENTIFIER = none.PositionBasedFluid2D;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_DISABLE_SAFETY_CHECKS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = PositionBasedFluid2D/Source/BridgingHeader.h;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
 		};

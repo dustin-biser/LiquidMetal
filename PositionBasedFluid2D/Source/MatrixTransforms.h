@@ -30,6 +30,12 @@ matrix_float4x4 matrix_from_rotation (
         float z
 );
 
+matrix_float4x4 matrix_from_scale (
+        float x,
+        float y,
+        float z
+);
+
 matrix_float3x3 sub_matrix_float3x3 (
         const matrix_float4x4 * m
 );

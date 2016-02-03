@@ -24,13 +24,20 @@ class MetalRenderer {
     var depthStencilState : MTLDepthStencilState!  = nil
     
     var particleMesh : MTKMesh!                    = nil
+    
     var instanceBuffer : MTLBuffer!                = nil
     var frameUniformBuffers = [MTLBuffer!](count: numInflightCommandBuffers, repeatedValue: nil)
+    
     var currentFrame : Int = 0
     
-    var numParticles: Int = 4
+    var numParticles : Int = 0
     
     var inflightSemaphore = dispatch_semaphore_create(numInflightCommandBuffers)
+    
+    let particleRadius : Float = 0.06
+    
+//    var angle : Float = 0.0
+//    let angleDelta: Float = 0.01
     
     
     //-----------------------------------------------------------------------------------
@@ -43,7 +50,7 @@ class MetalRenderer {
         self.allocateUniformBuffers()
         self.setFrameUniforms()
         
-//        self.uploadInstanceData()
+        self.uploadInstanceData()
         
         let vertexDescriptor = self.initVertexDescriptor()
         self.uploadMeshVertexData(vertexDescriptor)
@@ -86,17 +93,20 @@ class MetalRenderer {
     
     //-----------------------------------------------------------------------------------
     private func setFrameUniforms() {
-        let modelMatrix = matrix_identity_float4x4
+        let scale = Float(particleRadius * 0.5)
+        let scaleMatrix = matrix_from_scale(scale, scale, scale)
+        
+        let modelMatrix = scaleMatrix
         
         // Projection Matrix:
         let width = Float(self.mtkView.bounds.size.width)
         let height = Float(self.mtkView.bounds.size.height)
         let aspect = width / height
-        let fovy = Float(65.0) * (Float(M_PI) / Float(180.0))
+        let fovy = Float(50.0) * (Float(M_PI) / Float(180.0))
         let projectionMatrix = matrix_from_perspective_fov_aspectLH(fovy, aspect,
             Float(0.1), Float(100))
         
-        let viewMatrix = matrix_from_translation(0.0, 0.0, 30.0)
+        let viewMatrix = matrix_from_translation(0.0, 0.0, 5.0)
         var modelView = matrix_multiply(viewMatrix, modelMatrix)
         let normalMatrix = sub_matrix_float3x3(&modelView)
         
@@ -170,26 +180,43 @@ class MetalRenderer {
     
     //-----------------------------------------------------------------------------------
     private func uploadInstanceData() {
-        var instanceData0 = InstanceUniforms()
-        instanceData0.modelMatrix = matrix_from_translation(-1.0, -1.0, 0.0)
         
-        var instanceData1 = InstanceUniforms()
-        instanceData1.modelMatrix = matrix_from_translation(1.0, -1.0, 0.0)
+        //FIXME: once numParticles exceeds 64^2 = 4096 = 2^12, the particles no longer form a
+        // rectangular grid.
         
-        var instanceData2 = InstanceUniforms()
-        instanceData2.modelMatrix = matrix_from_translation(-1.0, 1.0, 0.0)
+        let x_count = 65
+        let y_count = 64
+        numParticles = x_count * y_count
+       
+        var instanceArray = [InstanceUniforms](
+                count: numParticles,
+                repeatedValue: InstanceUniforms()
+        )
         
-        var instanceData3 = InstanceUniforms()
-        instanceData3.modelMatrix = matrix_from_translation(1.0, 1.0, 0.0)
+        let origin = float2(-Float(x_count)/2.0, -Float(y_count)/2.0) * particleRadius
         
+        print("numPartices: \(numParticles)")
+        print("origin: \(origin)")
+        print("particleRadius: \(particleRadius)")
+        print("sizeof(Int): \(sizeof(Int))")
         
-        let instanceData = [instanceData0, instanceData1, instanceData2, instanceData3]
+        for var j = 0; j < y_count; ++j {
+            for var i = 0; i < x_count; ++i {
+                var pos = origin
+                pos.x += Float(i) * particleRadius
+                pos.y += Float(j) * particleRadius
+                
+                instanceArray[j*x_count + i].worldOffset = float4(pos.x, pos.y, 0.0, 0.0)
+            }
+        }
         
         instanceBuffer = device.newBufferWithBytes(
-            instanceData,
-            length: strideof(InstanceUniforms) * numParticles,
-            options: .CPUCacheModeWriteCombined
+            instanceArray,
+            length: instanceArray.count * strideof(InstanceUniforms),
+            options: .CPUCacheModeDefaultCache
         )
+        
+        print("Buffer bytes: \(instanceBuffer.length)")
         
     }
     
@@ -282,13 +309,20 @@ class MetalRenderer {
                 atIndex: FrameUniformBufferIndex
         )
         
+        renderEncoder.setVertexBuffer(
+                instanceBuffer,
+                offset: 0,
+                atIndex: InstanceUniformBufferIndex
+        )
+        
         
         for subMesh in particleMesh.submeshes {
             renderEncoder.drawIndexedPrimitives(.Triangle,
                 indexCount: subMesh.indexCount,
                 indexType: subMesh.indexType,
                 indexBuffer: subMesh.indexBuffer.buffer,
-                indexBufferOffset: subMesh.indexBuffer.offset
+                indexBufferOffset: subMesh.indexBuffer.offset,
+                instanceCount: numParticles
             )
         }
         
