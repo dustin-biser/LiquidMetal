@@ -35,10 +35,7 @@ class MetalRenderer {
     
     var inflightSemaphore = dispatch_semaphore_create(numInflightCommandBuffers)
     
-    let particleRadius : Float = 0.06
-    
-//    var angle : Float = 0.0
-//    let angleDelta: Float = 0.01
+    let particleRadius : Float = 0.05
     
     
     //-----------------------------------------------------------------------------------
@@ -149,7 +146,7 @@ class MetalRenderer {
     
     //-----------------------------------------------------------------------------------
     private func uploadMeshVertexData(vertexDescriptor: MTLVertexDescriptor) {
-        guard let assetURL = NSBundle.mainBundle().URLForResource("sphere.obj", withExtension: nil) else {
+        guard let assetURL = NSBundle.mainBundle().URLForResource("sphere_lowest_res.obj", withExtension: nil) else {
             fatalError("Unable to locate asset: sphere.obj")
         }
         
@@ -182,12 +179,8 @@ class MetalRenderer {
     
     //-----------------------------------------------------------------------------------
     private func uploadInstanceData() {
-        
-        //FIXME: once numParticles exceeds 64^2 = 4096 = 2^12, the particles no longer form a
-        // rectangular grid.
-        
-        let x_count = 70
-        let y_count = 70
+        let x_count = 80
+        let y_count = 80
         numParticles = x_count * y_count
        
         var instanceArray = [InstanceUniforms](
@@ -199,9 +192,6 @@ class MetalRenderer {
         let origin = float2(-Float(x_count)/2.0, -Float(y_count)/2.0) * particleRadius
         
         print("numPartices: \(numParticles)")
-        print("origin: \(origin)")
-        print("particleRadius: \(particleRadius)")
-        print("sizeof(Int): \(sizeof(Int))")
         
         for var j = 0; j < y_count; ++j {
             for var i = 0; i < x_count; ++i {
@@ -218,8 +208,6 @@ class MetalRenderer {
             length: instanceArray.count * strideof(InstanceUniforms),
             options: .CPUCacheModeDefaultCache
         )
-        
-        print("Buffer bytes: \(instanceBuffer.length)")
         
     }
     
