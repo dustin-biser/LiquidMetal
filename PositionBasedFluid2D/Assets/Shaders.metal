@@ -36,7 +36,7 @@ struct VertexOutput {
 // Vertex Function
 vertex VertexOutput vertexFunction (
         VertexInput v_in [[ stage_in ]],
-        constant InstanceUniforms * instanceUniforms [[ buffer(InstanceUniformBufferIndex) ]],
+        device InstanceUniforms * instanceUniforms [[ buffer(InstanceUniformBufferIndex) ]],
         constant FrameUniforms & frameUniforms [[ buffer(FrameUniformBufferIndex) ]],
         uint iid [[ instance_id ]]
 ) {

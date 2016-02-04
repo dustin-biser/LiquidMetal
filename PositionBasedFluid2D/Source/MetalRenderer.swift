@@ -27,6 +27,7 @@ class MetalRenderer {
     
     var instanceBuffer : MTLBuffer!                = nil
     var frameUniformBuffers = [MTLBuffer!](count: numInflightCommandBuffers, repeatedValue: nil)
+    var resultBuffer : MTLBuffer!                  = nil
     
     var currentFrame : Int = 0
     
@@ -90,6 +91,7 @@ class MetalRenderer {
             )
         }
     }
+    
     
     //-----------------------------------------------------------------------------------
     private func setFrameUniforms() {
@@ -184,14 +186,15 @@ class MetalRenderer {
         //FIXME: once numParticles exceeds 64^2 = 4096 = 2^12, the particles no longer form a
         // rectangular grid.
         
-        let x_count = 65
-        let y_count = 64
+        let x_count = 70
+        let y_count = 70
         numParticles = x_count * y_count
        
         var instanceArray = [InstanceUniforms](
                 count: numParticles,
                 repeatedValue: InstanceUniforms()
         )
+        
         
         let origin = float2(-Float(x_count)/2.0, -Float(y_count)/2.0) * particleRadius
         
@@ -314,7 +317,6 @@ class MetalRenderer {
                 offset: 0,
                 atIndex: InstanceUniformBufferIndex
         )
-        
         
         for subMesh in particleMesh.submeshes {
             renderEncoder.drawIndexedPrimitives(.Triangle,
