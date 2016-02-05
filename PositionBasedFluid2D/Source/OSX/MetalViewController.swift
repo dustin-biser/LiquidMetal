@@ -29,8 +29,8 @@ class MetalViewController: NSViewController {
         
         metalRenderer = MetalRenderer(
             withMTKView: mtkView,
-            numParticles: pbfSimulator2D.numParticles,
-            particleRadius: pbfSimulator2D.particleRadius
+            numParticles: Int(pbfSimulator2D.particleData.numParticles),
+            particleRadius: pbfSimulator2D.particleData.size
         )
         
         

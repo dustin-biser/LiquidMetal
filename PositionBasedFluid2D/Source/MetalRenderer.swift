@@ -100,7 +100,7 @@ class MetalRenderer {
     }
     
     //-----------------------------------------------------------------------------------
-    private func setPerFrameData (inout particleData : [ParticleData]) {
+    private func setPerFrameData (inout particleData: ParticleData) {
         
         uploadParticleDataToInstanceBuffer(&particleData)
         
@@ -108,11 +108,9 @@ class MetalRenderer {
     }
     
     //-----------------------------------------------------------------------------------
-    private func uploadParticleDataToInstanceBuffer (
-            inout particleData : [ParticleData]
-    ) {
-        let numBytes = strideof(ParticleData) * particleData.count
-        memcpy(instanceBuffer.contents(), &particleData, numBytes)
+    private func uploadParticleDataToInstanceBuffer (inout particleData: ParticleData) {
+        let numBytes = strideof(vector_float3) * Int(particleData.numParticles)
+        memcpy(instanceBuffer.contents(), particleData.position, numBytes)
     }
     
     
@@ -320,7 +318,7 @@ class MetalRenderer {
     
     //-----------------------------------------------------------------------------------
     /// Main render method
-    func render(inout particleData: [ParticleData]) {
+    func render(inout particleData: ParticleData) {
         for var i = 0; i < numInflightCommandBuffers; ++i {
             // Allow the renderer to preflight frames on the CPU (using a semapore as
             // a guard) and commit them to the GPU.  This semaphore will get signaled

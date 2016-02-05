@@ -18,9 +18,11 @@ extern "C" {
     
 #include "ParticleData.h"
     
+///Position Based Fluid solver for 2D simulation.
 void pbfSolver2D (
-    float dt,
-    const struct ParticleData * particleData
+    struct ParticleData * particleData,  /// Particle data, positions and velocities
+    float dt,                            /// Time step
+    const vector_float3 * force_ext      /// External forces
 );
     
 #ifdef __cplusplus
