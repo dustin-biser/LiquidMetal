@@ -20,5 +20,5 @@ struct FrameUniforms {
 };
 
 struct InstanceUniforms {
-    vector_float4 worldOffset;
+    vector_float3 worldOffset;
 };

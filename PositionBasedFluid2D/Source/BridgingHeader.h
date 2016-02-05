@@ -16,9 +16,8 @@
 
 #import <semaphore.h>
 
-#import <simd/simd.h>
-#import <simd/matrix.h>
-
 #import "MatrixTransforms.h"
 #import "ShaderResourceIndices.h"
 #import "ShaderUniforms.h"
+#import "PBFSolver2D.h"
+#import "ParticleData.h"

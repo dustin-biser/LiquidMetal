@@ -23,32 +23,33 @@ class MetalRenderer {
     var pipelineState : MTLRenderPipelineState!    = nil
     var depthStencilState : MTLDepthStencilState!  = nil
     
-    var particleMesh : MTKMesh!                    = nil
-    
     var instanceBuffer : MTLBuffer!                = nil
     var frameUniformBuffers = [MTLBuffer!](count: numInflightCommandBuffers, repeatedValue: nil)
-    var resultBuffer : MTLBuffer!                  = nil
     
     var currentFrame : Int = 0
     
-    var numParticles : Int = 0
-    
     var inflightSemaphore = dispatch_semaphore_create(numInflightCommandBuffers)
     
-    let particleRadius : Float = 0.05
+    let numParticles : Int
+    let particleRadius : Float
+    var particleMesh : MTKMesh! = nil
     
     
     //-----------------------------------------------------------------------------------
-    init(withMTKView view:MTKView) {
+    init (
+            withMTKView view : MTKView,
+            numParticles : Int,
+            particleRadius : Float
+    ) {
         mtkView = view
+        self.numParticles = numParticles
+        self.particleRadius = particleRadius
         
         self.setupMetal()
         self.setupView()
         
         self.allocateUniformBuffers()
-        self.setFrameUniforms()
-        
-        self.uploadInstanceData()
+        self.allocateInstanceData()
         
         let vertexDescriptor = self.initVertexDescriptor()
         self.uploadMeshVertexData(vertexDescriptor)
@@ -91,7 +92,32 @@ class MetalRenderer {
     
     
     //-----------------------------------------------------------------------------------
-    private func setFrameUniforms() {
+    private func allocateInstanceData() {
+        instanceBuffer = device.newBufferWithLength (
+            numParticles * strideof(InstanceUniforms),
+            options: .CPUCacheModeDefaultCache
+        )
+    }
+    
+    //-----------------------------------------------------------------------------------
+    private func setPerFrameData (inout particleData : [ParticleData]) {
+        
+        uploadParticleDataToInstanceBuffer(&particleData)
+        
+        updateFrameUniformData()
+    }
+    
+    //-----------------------------------------------------------------------------------
+    private func uploadParticleDataToInstanceBuffer (
+            inout particleData : [ParticleData]
+    ) {
+        let numBytes = strideof(ParticleData) * particleData.count
+        memcpy(instanceBuffer.contents(), &particleData, numBytes)
+    }
+    
+    
+    //-----------------------------------------------------------------------------------
+    private func updateFrameUniformData() {
         let scale = Float(particleRadius * 0.5)
         let scaleMatrix = matrix_from_scale(scale, scale, scale)
         
@@ -119,6 +145,7 @@ class MetalRenderer {
             strideof(FrameUniforms))
         
         currentFrame = (currentFrame + 1) % frameUniformBuffers.count
+        
     }
     
     //-----------------------------------------------------------------------------------
@@ -178,36 +205,7 @@ class MetalRenderer {
     }
     
     //-----------------------------------------------------------------------------------
-    private func uploadInstanceData() {
-        let x_count = 80
-        let y_count = 80
-        numParticles = x_count * y_count
-       
-        var instanceArray = [InstanceUniforms](
-                count: numParticles,
-                repeatedValue: InstanceUniforms()
-        )
-        
-        
-        let origin = float2(-Float(x_count)/2.0, -Float(y_count)/2.0) * particleRadius
-        
-        print("numPartices: \(numParticles)")
-        
-        for var j = 0; j < y_count; ++j {
-            for var i = 0; i < x_count; ++i {
-                var pos = origin
-                pos.x += Float(i) * particleRadius
-                pos.y += Float(j) * particleRadius
-                
-                instanceArray[j*x_count + i].worldOffset = float4(pos.x, pos.y, 0.0, 0.0)
-            }
-        }
-        
-        instanceBuffer = device.newBufferWithBytes(
-            instanceArray,
-            length: instanceArray.count * strideof(InstanceUniforms),
-            options: .CPUCacheModeDefaultCache
-        )
+    func uploadParticlePositions(inout particleData: [vector_float4]) {
         
     }
     
@@ -322,7 +320,7 @@ class MetalRenderer {
     
     //-----------------------------------------------------------------------------------
     /// Main render method
-    func render() {
+    func render(inout particleData: [ParticleData]) {
         for var i = 0; i < numInflightCommandBuffers; ++i {
             // Allow the renderer to preflight frames on the CPU (using a semapore as
             // a guard) and commit them to the GPU.  This semaphore will get signaled
@@ -330,7 +328,7 @@ class MetalRenderer {
             // below, signifying the CPU can go ahead and prepare another frame.
             dispatch_semaphore_wait(inflightSemaphore, DISPATCH_TIME_FOREVER);
             
-            setFrameUniforms()
+            setPerFrameData(&particleData)
             
             let commandBuffer = commandQueue.commandBuffer()
             

@@ -43,7 +43,7 @@ vertex VertexOutput vertexFunction (
     VertexOutput vOut;
     
     float4 pWorld = frameUniforms.modelMatrix * float4(v_in.position, 1.0);
-    pWorld += instanceUniforms[iid].worldOffset;
+    pWorld += float4(instanceUniforms[iid].worldOffset, 0.0);
     float4 pEye = frameUniforms.viewMatrix * pWorld;
     
     vOut.eye_position = pEye.xyz;

@@ -15,6 +15,8 @@ class MetalViewController: NSViewController {
     
     var metalRenderer : MetalRenderer! = nil
     
+    var pbfSimulator2D : PBFSimulator2D! = nil
+    
     
     //-----------------------------------------------------------------------------------
     override func viewDidLoad() {
@@ -23,7 +25,13 @@ class MetalViewController: NSViewController {
         // self will handle rendering the view
         mtkView.delegate = self
         
-        metalRenderer = MetalRenderer(withMTKView: mtkView)
+        pbfSimulator2D = PBFSimulator2D()
+        
+        metalRenderer = MetalRenderer(
+            withMTKView: mtkView,
+            numParticles: pbfSimulator2D.numParticles,
+            particleRadius: pbfSimulator2D.particleRadius
+        )
         
         
         //-- Add self to Responder Chain so it can handle key and mouse input events.
@@ -79,8 +87,11 @@ extension MetalViewController : MTKViewDelegate {
     //-----------------------------------------------------------------------------------
     // Called on the delegate when it is asked to render into the view
     func drawInMTKView(view: MTKView) {
+        
+        pbfSimulator2D.update()
+        
         autoreleasepool {
-            metalRenderer.render()
+            metalRenderer.render(&pbfSimulator2D.particleData)
         }
     }
 

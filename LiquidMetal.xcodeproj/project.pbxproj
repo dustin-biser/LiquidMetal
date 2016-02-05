@@ -20,6 +20,8 @@
 		0CED35031C62F3D60002AD0E /* sphere_lowres.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0CED35021C62F3D60002AD0E /* sphere_lowres.obj */; };
 		0CED35061C62F6240002AD0E /* sphere_lowest_res.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0CED35051C62F6240002AD0E /* sphere_lowest_res.obj */; };
 		0CED35071C62F6430002AD0E /* sphere_lowest_res.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0CED35051C62F6240002AD0E /* sphere_lowest_res.obj */; };
+		0CED350A1C63EDA10002AD0E /* PBFSolver2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0CED35081C63EDA10002AD0E /* PBFSolver2D.cpp */; };
+		0CED35111C640D1E0002AD0E /* PBFSimulator2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CED35101C640D1E0002AD0E /* PBFSimulator2D.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +57,10 @@
 		0CBEC3F91C603BEE00836C99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0CED35021C62F3D60002AD0E /* sphere_lowres.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sphere_lowres.obj; sourceTree = "<group>"; };
 		0CED35051C62F6240002AD0E /* sphere_lowest_res.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sphere_lowest_res.obj; sourceTree = "<group>"; };
+		0CED35081C63EDA10002AD0E /* PBFSolver2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PBFSolver2D.cpp; sourceTree = "<group>"; };
+		0CED35091C63EDA10002AD0E /* PBFSolver2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBFSolver2D.h; sourceTree = "<group>"; };
+		0CED350F1C640B4F0002AD0E /* ParticleData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleData.h; sourceTree = "<group>"; };
+		0CED35101C640D1E0002AD0E /* PBFSimulator2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBFSimulator2D.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +145,10 @@
 				0C4CD3CD1C5F075D0084F229 /* MetalRenderer.swift */,
 				0C4CD3D31C5F075D0084F229 /* ShaderResourceIndices.h */,
 				0C4CD3D41C5F075D0084F229 /* ShaderUniforms.h */,
+				0CED35081C63EDA10002AD0E /* PBFSolver2D.cpp */,
+				0CED35091C63EDA10002AD0E /* PBFSolver2D.h */,
+				0CED350F1C640B4F0002AD0E /* ParticleData.h */,
+				0CED35101C640D1E0002AD0E /* PBFSimulator2D.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -320,6 +330,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CED35111C640D1E0002AD0E /* PBFSimulator2D.swift in Sources */,
 				0C4CD3DB1C5F075D0084F229 /* AppDelegate.swift in Sources */,
 				0C4CD3D51C5F075D0084F229 /* Shaders.metal in Sources */,
 				0C4CD3DD1C5F075D0084F229 /* MetalViewController.swift in Sources */,
@@ -327,6 +338,7 @@
 				0C4CD3DE1C5F075D0084F229 /* ViewController.swift in Sources */,
 				0C4CD3D91C5F075D0084F229 /* MatrixTransforms.c in Sources */,
 				0C4CD3DA1C5F075D0084F229 /* MetalRenderer.swift in Sources */,
+				0CED350A1C63EDA10002AD0E /* PBFSolver2D.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,6 +486,7 @@
 		0C4CD3BA1C5F061D0084F229 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = PositionBasedFluid2D/Source/OSX/Info.plist;
@@ -490,6 +503,7 @@
 		0C4CD3BB1C5F061D0084F229 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = PositionBasedFluid2D/Source/OSX/Info.plist;
