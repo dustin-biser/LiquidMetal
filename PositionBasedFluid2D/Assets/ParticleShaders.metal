@@ -1,5 +1,5 @@
 //
-//  shaders.metal
+//  ParticleShaders.metal
 //  MetalDemo
 //
 //  Created by Dustin on 12/27/15.
@@ -7,11 +7,12 @@
 //
 
 #include <metal_stdlib>
+using namespace metal;
+
 #include <simd/simd.h>
 #include "ShaderUniforms.h"
 #include "ShaderResourceIndices.h"
 
-using namespace metal;
 
 // Variables in constant address space:
 constant float3 light_position = float3(0.0, 0.0, -1.0);

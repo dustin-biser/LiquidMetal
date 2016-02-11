@@ -17,12 +17,14 @@ extern "C" {
 #endif
     
 #include "ParticleData.h"
+#include "Grid.h"
     
 ///Position Based Fluid solver for 2D simulation.
 void pbfSolver2D (
     struct ParticleData * particleData,  /// Particle data, positions and velocities
     float dt,                            /// Time step
-    const vector_float3 * force_ext      /// External forces
+    const vector_float3 * force_ext,     /// External forces
+    struct Grid * outGrid                /// Returned Grid
 );
     
 #ifdef __cplusplus

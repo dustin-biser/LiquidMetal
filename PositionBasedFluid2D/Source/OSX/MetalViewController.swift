@@ -91,7 +91,10 @@ extension MetalViewController : MTKViewDelegate {
         pbfSimulator2D.update()
         
         autoreleasepool {
-            metalRenderer.render(&pbfSimulator2D.particleData)
+            metalRenderer.render(
+                particleData: &pbfSimulator2D.particleData,
+                particleGrid: &pbfSimulator2D.grid
+            )
         }
     }
 

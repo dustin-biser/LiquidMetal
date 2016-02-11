@@ -8,13 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		0C4CD38F1C5F04970084F229 /* LiquidMetalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4CD38E1C5F04970084F229 /* LiquidMetalTests.swift */; };
-		0C4CD3D51C5F075D0084F229 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0C4CD3C11C5F075D0084F229 /* Shaders.metal */; };
+		0C4CD3D51C5F075D0084F229 /* ParticleShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0C4CD3C11C5F075D0084F229 /* ParticleShaders.metal */; };
 		0C4CD3D91C5F075D0084F229 /* MatrixTransforms.c in Sources */ = {isa = PBXBuildFile; fileRef = 0C4CD3CB1C5F075D0084F229 /* MatrixTransforms.c */; };
 		0C4CD3DA1C5F075D0084F229 /* MetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4CD3CD1C5F075D0084F229 /* MetalRenderer.swift */; };
 		0C4CD3DB1C5F075D0084F229 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4CD3CF1C5F075D0084F229 /* AppDelegate.swift */; };
 		0C4CD3DC1C5F075D0084F229 /* MetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4CD3D01C5F075D0084F229 /* MetalView.swift */; };
 		0C4CD3DD1C5F075D0084F229 /* MetalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4CD3D11C5F075D0084F229 /* MetalViewController.swift */; };
 		0C4CD3DE1C5F075D0084F229 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4CD3D21C5F075D0084F229 /* ViewController.swift */; };
+		0C80B5141C6C42390098B4DA /* GridShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0C80B5131C6C42390098B4DA /* GridShaders.metal */; };
 		0CBEC3FB1C603BEE00836C99 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0CBEC3F81C603BEE00836C99 /* Main.storyboard */; };
 		0CBEC3FC1C603BEE00836C99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CBEC3F91C603BEE00836C99 /* Assets.xcassets */; };
 		0CED35031C62F3D60002AD0E /* sphere_lowres.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0CED35021C62F3D60002AD0E /* sphere_lowres.obj */; };
@@ -40,7 +41,7 @@
 		0C4CD38E1C5F04970084F229 /* LiquidMetalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidMetalTests.swift; sourceTree = "<group>"; };
 		0C4CD3901C5F04970084F229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0C4CD3AF1C5F061D0084F229 /* PositionBasedFluid2D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PositionBasedFluid2D.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		0C4CD3C11C5F075D0084F229 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		0C4CD3C11C5F075D0084F229 /* ParticleShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = ParticleShaders.metal; sourceTree = "<group>"; };
 		0C4CD3C91C5F075D0084F229 /* BridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		0C4CD3CB1C5F075D0084F229 /* MatrixTransforms.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MatrixTransforms.c; sourceTree = "<group>"; };
 		0C4CD3CC1C5F075D0084F229 /* MatrixTransforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatrixTransforms.h; sourceTree = "<group>"; };
@@ -51,6 +52,8 @@
 		0C4CD3D21C5F075D0084F229 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		0C4CD3D31C5F075D0084F229 /* ShaderResourceIndices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderResourceIndices.h; sourceTree = "<group>"; };
 		0C4CD3D41C5F075D0084F229 /* ShaderUniforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderUniforms.h; sourceTree = "<group>"; };
+		0C80B5121C6BCA3A0098B4DA /* Grid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Grid.h; sourceTree = "<group>"; };
+		0C80B5131C6C42390098B4DA /* GridShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = GridShaders.metal; sourceTree = "<group>"; };
 		0CBEC3F51C603BBD00836C99 /* sphere.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sphere.obj; sourceTree = "<group>"; };
 		0CBEC3F71C603BEE00836C99 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0CBEC3F81C603BEE00836C99 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -129,7 +132,8 @@
 		0C4CD3C01C5F075D0084F229 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				0C4CD3C11C5F075D0084F229 /* Shaders.metal */,
+				0C4CD3C11C5F075D0084F229 /* ParticleShaders.metal */,
+				0C80B5131C6C42390098B4DA /* GridShaders.metal */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -149,6 +153,7 @@
 				0CED35091C63EDA10002AD0E /* PBFSolver2D.h */,
 				0CED350F1C640B4F0002AD0E /* ParticleData.h */,
 				0CED35101C640D1E0002AD0E /* PBFSimulator2D.swift */,
+				0C80B5121C6BCA3A0098B4DA /* Grid.h */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -332,7 +337,8 @@
 			files = (
 				0CED35111C640D1E0002AD0E /* PBFSimulator2D.swift in Sources */,
 				0C4CD3DB1C5F075D0084F229 /* AppDelegate.swift in Sources */,
-				0C4CD3D51C5F075D0084F229 /* Shaders.metal in Sources */,
+				0C80B5141C6C42390098B4DA /* GridShaders.metal in Sources */,
+				0C4CD3D51C5F075D0084F229 /* ParticleShaders.metal in Sources */,
 				0C4CD3DD1C5F075D0084F229 /* MetalViewController.swift in Sources */,
 				0C4CD3DC1C5F075D0084F229 /* MetalView.swift in Sources */,
 				0C4CD3DE1C5F075D0084F229 /* ViewController.swift in Sources */,

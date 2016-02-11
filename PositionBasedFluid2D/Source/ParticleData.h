@@ -12,9 +12,8 @@
 
 // Store particle attribute data in aligned arrays.
 struct ParticleData {
-    vector_float3 * position;      // position at current time step
-    vector_float3 * position_prev; // position at previous time step
-    vector_float3 * velocity;      // velocity at current time step
+    vector_float3 * position;
+    vector_float3 * velocity;
     
     unsigned long numParticles;
     

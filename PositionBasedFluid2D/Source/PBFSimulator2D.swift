@@ -10,20 +10,21 @@ class PBFSimulator2D {
     
     // Class instance will retain ownership of particle attribute data
     var positions      : [vector_float3]
-    var positions_prev : [vector_float3]
     var velocities     : [vector_float3]
     
     var particleData : ParticleData
+    var grid : Grid
     
     let numParticles : Int = 40*40
     let particleSize : Float = 0.06
-    let dt : Float = 0.01
+    let dt : Float = 0.005
     var gravity = vector_float3(0.0, -9.81, 0.0)
  
     
     //-----------------------------------------------------------------------------------
     init() {
         particleData = ParticleData()
+        grid = Grid()
         
         particleData.numParticles = UInt(numParticles)
         particleData.size = particleSize
@@ -35,16 +36,6 @@ class PBFSimulator2D {
                     repeatedValue: vector_float3(0.0)
             )
             particleData.position = UnsafeMutablePointer<vector_float3>(positions)
-        }
-        
-        
-        // Prev Positions:
-        do {
-            positions_prev = [vector_float3] (
-                count: numParticles,
-                repeatedValue: vector_float3(0.0)
-            )
-            particleData.position_prev = UnsafeMutablePointer<vector_float3>(positions_prev)
         }
         
         
@@ -66,7 +57,8 @@ class PBFSimulator2D {
         let x_count = Int( sqrtf(Float(particleData.numParticles)) )
         let y_count = x_count
         
-        let origin = float2(-Float(x_count)/2.0, -Float(y_count)/2.0) * particleSize
+        var origin = float2(-Float(x_count)/2.0, -Float(y_count)/2.0) * particleSize
+        origin += float2(-Float(x_count)/2.0, Float(y_count)/3.0)*particleSize
         
         for var j = 0; j < y_count; ++j {
             for var i = 0; i < x_count; ++i {
@@ -81,7 +73,7 @@ class PBFSimulator2D {
     
     //-----------------------------------------------------------------------------------
     internal func update () {
-        pbfSolver2D(&particleData, dt, &gravity)
+        pbfSolver2D(&particleData, dt, &gravity, &grid)
     }
     
 }

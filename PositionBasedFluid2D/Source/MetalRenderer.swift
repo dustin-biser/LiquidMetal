@@ -11,6 +11,8 @@ import MetalKit
 // Use for tripple buffering generated frames.
 private let numInflightCommandBuffers = 3
 
+private let desiredFramesPerSecond = 60
+
 
 class MetalRenderer {
 
@@ -76,7 +78,7 @@ class MetalRenderer {
         mtkView.sampleCount = 4
         mtkView.colorPixelFormat = MTLPixelFormat.BGRA8Unorm
         mtkView.depthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8
-        mtkView.preferredFramesPerSecond = 60
+        mtkView.preferredFramesPerSecond = desiredFramesPerSecond
         mtkView.framebufferOnly = true
     }
     
@@ -318,7 +320,10 @@ class MetalRenderer {
     
     //-----------------------------------------------------------------------------------
     /// Main render method
-    func render(inout particleData: ParticleData) {
+    func render(
+            inout particleData particleData: ParticleData,
+            inout particleGrid: Grid
+    ) {
         for var i = 0; i < numInflightCommandBuffers; ++i {
             // Allow the renderer to preflight frames on the CPU (using a semapore as
             // a guard) and commit them to the GPU.  This semaphore will get signaled
