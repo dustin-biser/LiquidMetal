@@ -63,6 +63,7 @@ void pbfSolver2D (
         
         
         // TODO: Remove this after testing:
+        // pos should be updated by solver once implemented.
         pos = predicted_position[i];
     }
     
@@ -75,7 +76,7 @@ static void initSolver(
 ) {
     // Arbitrarily setting kernel radius to 5 times particle radius.
     // TODO: figure out how h relates to rest density rho_0.
-    h = particleData->size * 5.0f;
+    h = particleData->size;
     
     initPredictedPositions(particleData);
 }
@@ -137,4 +138,5 @@ static void constructUniformGrid (
     
     outGrid->min = min;
     outGrid->max = max;
+    outGrid->cellSize = gridCellSize;
 }

@@ -88,13 +88,22 @@ extension MetalViewController : MTKViewDelegate {
     // Called on the delegate when it is asked to render into the view
     func drawInMTKView(view: MTKView) {
         
-        pbfSimulator2D.update()
+        struct DoOnce {
+            static var firstRun = true
+        }
         
-        autoreleasepool {
-            metalRenderer.render(
-                particleData: &pbfSimulator2D.particleData,
-                particleGrid: &pbfSimulator2D.grid
-            )
+        if DoOnce.firstRun {
+            
+            pbfSimulator2D.update()
+            
+            autoreleasepool {
+                metalRenderer.render(
+                    particleData: &pbfSimulator2D.particleData,
+                    grid: &pbfSimulator2D.grid
+                )
+            }
+            
+            DoOnce.firstRun = false
         }
     }
 

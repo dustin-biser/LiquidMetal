@@ -14,28 +14,38 @@ using namespace metal;
 #include "ShaderResourceIndices.h"
 
 
-// Input to the vertex shader.
 struct VertexInput {
     float3 position [[ attribute(PositionAttribute) ]];
 };
 
+struct VertexOutput {
+    float4 position [[ position ]];
+    float pointSize [[ point_size ]];
+};
+
 
 //---------------------------------------------------------------------------------------
-vertex float4 gridVertexFunction (
+vertex VertexOutput gridVertexFunction (
         VertexInput v_in [[ stage_in ]],
         constant FrameUniforms & uniforms [[ buffer(FrameUniformBufferIndex) ]]
 ) {
-    float4 pos = uniforms.modelMatrix * float4(v_in.position, 1.0);
-    pos = uniforms.viewMatrix * pos;
+    float4 pos = uniforms.viewMatrix * float4(v_in.position, 1.0);
     
-    // Return clip space coordinate
-    return uniforms.projectionMatrix * pos;
+    // Return clip-space coordinate
+    pos = uniforms.projectionMatrix * pos;
+    
+    VertexOutput vOut;
+    vOut.position = pos;
+    vOut.pointSize = 2.0;
+    
+    return vOut;
 }
 
 
 //---------------------------------------------------------------------------------------
-fragment half4 gridFragmentFunction ()
-{
+fragment half4 gridFragmentFunction (
+        VertexOutput f_in [[ stage_in ]]
+){
     return half4(1.0, 1.0, 1.0, 1.0);
 }
 

@@ -14,6 +14,8 @@ struct Grid {
     // Minimum and maximum coordinates of grid.
     vector_float3 min;
     vector_float3 max;
+    
+    float cellSize;
 };
 
 struct GridCell {

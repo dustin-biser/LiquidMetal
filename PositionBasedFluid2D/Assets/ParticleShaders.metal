@@ -16,7 +16,8 @@ using namespace metal;
 
 // Variables in constant address space:
 constant float3 light_position = float3(0.0, 0.0, -1.0);
-constant half3 diffuse = half3(0.4, 0.4, 0.7);
+//constant half3 diffuse = half3(0.3, 0.3, 0.525);
+constant half3 diffuse = half3(0.14, 0.14, 0.48);
 
 
 // Input to the vertex shader.
@@ -35,7 +36,7 @@ struct VertexOutput {
 
 //---------------------------------------------------------------------------------------
 // Vertex Function
-vertex VertexOutput vertexFunction (
+vertex VertexOutput particleVertexFunction (
         VertexInput v_in [[ stage_in ]],
         device InstanceUniforms * instanceUniforms [[ buffer(InstanceUniformBufferIndex) ]],
         constant FrameUniforms & frameUniforms [[ buffer(FrameUniformBufferIndex) ]],
@@ -57,7 +58,7 @@ vertex VertexOutput vertexFunction (
 
 //---------------------------------------------------------------------------------------
 // Fragment Function
-fragment half4 fragmentFunction (
+fragment half4 particleFragmentFunction (
         VertexOutput f_in [[ stage_in ]]
 ) {
     float3 l = normalize(light_position - f_in.eye_position);

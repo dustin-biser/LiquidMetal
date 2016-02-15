@@ -9,15 +9,15 @@
 class PBFSimulator2D {
     
     // Class instance will retain ownership of particle attribute data
-    var positions      : [vector_float3]
-    var velocities     : [vector_float3]
+    var positions  : [vector_float3]
+    var velocities : [vector_float3]
     
     var particleData : ParticleData
     var grid : Grid
     
-    let numParticles : Int = 40*40
-    let particleSize : Float = 0.06
-    let dt : Float = 0.005
+    let numParticles : Int = 10*10
+    let particleSize : Float = 0.2
+    let dt : Float = 0.01
     var gravity = vector_float3(0.0, -9.81, 0.0)
  
     
